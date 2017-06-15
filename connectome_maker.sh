@@ -8,7 +8,7 @@ dwidenoise data.nii.gz denoise_output.nii.gz
 # skull strip denoised DWI
 bet denoise_output.nii.gz denoise_output2.nii.gz -f 0.1 -F
 # dwipreprocess
-dwipreproc AP denoise_output2.nii.gz preproc_output.nii.gz  -rpe_none -fslgrad bvecs bvals -export_grad_fsl new_bvecs new_bvals
+dwipreproc denoise_output2.nii.gz preproc_output.nii.gz -rpe_none -pe_dir AP -fslgrad bvecs bvals -export_grad_fsl new_bvecs new_bvals
 
 ####-fslgrad is only needed if you are working with nii.gz files, not .mif####
 
@@ -41,7 +41,7 @@ fslroi bias_output.nii.gz b0.nii.gz 0 1
 bet b0.nii.gz betb0.nii.gz -f 0.1
 
 # seeding done at random within a mask image
-tckgen -seed_image bias_output_mask.nii.gz FOD.nii.gz tracks.tck -number 10M -maxlength 250 -fslgrad new_bvecs new_bvals
+tckgen -seed_image bias_output_mask.nii.gz FOD.nii.gz tracks.tck -select 10M -maxlength 250 -fslgrad new_bvecs new_bvals
 tcksift tracks.tck FOD.nii.gz SIFTtracks.tck -term_number 1M -force
 
 # registration of MNI to subject space
