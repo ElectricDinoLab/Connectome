@@ -2,6 +2,7 @@
 # from the davis lab at duke university
 # made in collaboration by dr. simon davis & amanda szymanski
 # this version uses MRtrix3
+# Harvard-Oxford Atlases of 100 & 471 ROIs are used
 
 # denoise original files
 dwidenoise data.nii.gz denoise_output.nii.gz
@@ -55,5 +56,17 @@ flirt -in HOA100_LR.nii.gz -ref betb0.nii.gz -out b0_HOA100_LR -applyxfm -init M
 # generate the connectomes
 tck2connectome SIFTtracks.tck b0_HOAsp.nii.gz output_471.csv 
 tck2connectome SIFTtracks.tck b0_HOA100_LR.nii.gz output_100.csv
+
+# generate input to create FA connectomes - example below uses both non-SIFTed and SIFTed tracks
+tcksample tracks.tck FA.nii.gz FA_mean_tracks.csv -stat_tck mean
+tcksample SIFTtracks.tck FA.nii.gz FA_mean_SIFT_tracks.csv -stat_tck mean
+
+# 471 ROI FA connectomes (non-SIFT & SIFT)
+tck2connectome tracks.tck b0_HOAsp output_FA_471.csv -scale_file FA_mean_tracks.csv -stat_edge mean
+tck2connectome SIFTtracks.tck b0_HOAsp output_FA_471_SIFT.csv -scale_file FA_mean_SIFT_tracks.csv -stat_edge mean
+
+# 100 ROI FA connectomes (non-SIFT & SIFT)
+tck2connectome tracks.tck b0_HOA100_LR.nii.gz output_FA_100.csv -scale_file FA_mean_tracks.csv -stat_edge mean
+tck2connectome SIFTtracks.tck b0_HOA100_LR.nii.gz output_FA_100_SIFT.csv -scale_file FA_mean_SIFT_tracks.csv -stat_edge mean
 
 
