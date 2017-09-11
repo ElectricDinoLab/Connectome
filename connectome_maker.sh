@@ -1,6 +1,7 @@
 # connectome_maker
 # from the davis lab at duke university
 # made in collaboration by dr. simon davis & amanda szymanski
+# this version uses MRtrix3
 
 # denoise original files
 dwidenoise data.nii.gz denoise_output.nii.gz
