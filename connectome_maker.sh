@@ -5,10 +5,20 @@
 # Harvard-Oxford Atlases of 100 & 471 ROIs are used
 
 # denoise original files
-dwidenoise data.nii.gz denoise_output.nii.gz
+dwidenoise data.nii.gz denoise_output.nii.gz -noise noise_output.nii.gz 
 
 # skull strip denoised DWI
 bet denoise_output.nii.gz denoise_output2.nii.gz -f 0.1 -F
+
+# first step in calculating mean b values to get SNR
+fslroi denoise_output2.nii.gz denoise_output3.nii.gz 1 25 # input how many diffusion directions your data has, not including the b0. In this example, there were 26 directions.
+
+# calculate mean b values to get SNR
+fslmaths -dt input denoise_output3.nii.gz -Tmean mean_b_vals.nii.gz -odt input
+
+# calculate SNR
+fslmaths -dt input mean_b_vals.nii.gz -div noise_output.nii.gz SNR_output
+
 # dwipreprocess
 dwipreproc denoise_output2.nii.gz preproc_output.nii.gz -rpe_none -pe_dir AP -fslgrad bvecs bvals -export_grad_fsl new_bvecs new_bvals
 
